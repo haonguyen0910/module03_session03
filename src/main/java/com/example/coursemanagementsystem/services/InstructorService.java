@@ -21,7 +21,7 @@ public class InstructorService {
     }
 
     public Instructor getInstructorById(Long id) {
-        return instructorRepo.findById(id);
+        return instructorRepo.findById(id).orElseThrow(() -> new RuntimeException("Instructor không tìm thấy"));
     }
 
     public Instructor createInstructor(Instructor instructor) {

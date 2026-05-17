@@ -21,7 +21,7 @@ public class CourseService {
     }
 
     public Course getCourseById(Long id) {
-        return courseRepo.findById(id);
+        return courseRepo.findById(id).orElseThrow(() -> new RuntimeException("Course không tìm thấy"));
     }
 
     public Course createCourse(Course course) {

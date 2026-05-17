@@ -40,16 +40,21 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getCourseById(@PathVariable Long id) {
-        Course x = courseService.getCourseById(id);
+        try {
+            Course x = courseService.getCourseById(id);
 
-        if (x == null) {
-            ApiResponse<?> response = new ApiResponse<>(false,"Course không tìm thấy",null);
+            if (x == null) {
+                ApiResponse<?> response = new ApiResponse<>(false,"Course không tìm thấy",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<Course> response = new ApiResponse<>(true,"Lấy khóa học thành công!",x);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<Course> response = new ApiResponse<>(true,"Lấy khóa học thành công!",x);
-
-        return ResponseEntity.ok(response);
     }
 
 //    @PostMapping
@@ -91,15 +96,20 @@ public class CourseController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> updateCourse(@PathVariable Long id, @RequestBody Course course) {
-        Course x = courseService.updateCourse(id, course);
+        try {
+            Course x = courseService.updateCourse(id, course);
 
-        if (x == null) {
-            ApiResponse<?> response =new ApiResponse<>(false,"Course không tìm thấy!",null);
+            if (x == null) {
+                ApiResponse<?> response =new ApiResponse<>(false,"Course không tìm thấy!",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<?> response =new ApiResponse<>(true,"Cập nhật khóa học thành công!",x);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<?> response =new ApiResponse<>(true,"Cập nhật khóa học thành công!",x);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 //    @DeleteMapping("/{id}")
@@ -114,14 +124,19 @@ public class CourseController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCourseById(@PathVariable Long id) {
-        Course x = courseService.deleteCourseById(id);
-        if (x == null) {
-            ApiResponse<?> response =new ApiResponse<>(false,"Course không tìm thấy!",null);
+        try {
+            Course x = courseService.deleteCourseById(id);
+            if (x == null) {
+                ApiResponse<?> response =new ApiResponse<>(false,"Course không tìm thấy!",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<?> response =new ApiResponse<>(true,"Xóa khóa học thành công!",x);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<?> response =new ApiResponse<>(true,"Xóa khóa học thành công!",x);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

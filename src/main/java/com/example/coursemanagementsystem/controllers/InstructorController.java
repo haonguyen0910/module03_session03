@@ -1,7 +1,6 @@
 package com.example.coursemanagementsystem.controllers;
 
 import com.example.coursemanagementsystem.models.ApiResponse;
-import com.example.coursemanagementsystem.models.Enrollment;
 import com.example.coursemanagementsystem.models.Instructor;
 import com.example.coursemanagementsystem.services.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,16 +40,21 @@ public class InstructorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getInstructorById(@PathVariable Long id) {
-        Instructor x = instructorService.getInstructorById(id);
+        try {
+            Instructor x = instructorService.getInstructorById(id);
 
-        if (x == null) {
-            ApiResponse<?> response = new ApiResponse<>(false,"Instructor không tìm thấy",null);
+            if (x == null) {
+                ApiResponse<?> response = new ApiResponse<>(false,"Instructor không tìm thấy",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<Instructor> response = new ApiResponse<>(true,"Lấy giảng viên theo Id thành công!",x);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<Instructor> response = new ApiResponse<>(true,"Lấy giảng viên theo Id thành công!",x);
-
-        return ResponseEntity.ok(response);
     }
 
 //    @PostMapping
@@ -92,15 +96,20 @@ public class InstructorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> updateInstructor(@PathVariable Long id, @RequestBody Instructor instructor) {
-        Instructor x = instructorService.updateInstructor(id, instructor);
+        try {
+            Instructor x = instructorService.updateInstructor(id, instructor);
 
-        if (x == null) {
-            ApiResponse<?> response =new ApiResponse<>(false,"Instructor không tìm thấy!",null);
+            if (x == null) {
+                ApiResponse<?> response =new ApiResponse<>(false,"Instructor không tìm thấy!",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<?> response =new ApiResponse<>(true,"Cập nhật giảng viên thành công!",x);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<?> response =new ApiResponse<>(true,"Cập nhật giảng viên thành công!",x);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 //    @DeleteMapping("/{id}")
@@ -115,14 +124,19 @@ public class InstructorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteInstructorById(@PathVariable Long id) {
-        Instructor x = instructorService.deleteInstructorById(id);
-        if (x == null) {
-            ApiResponse<?> response =new ApiResponse<>(false,"Instructor không tìm thấy!",null);
+        try {
+            Instructor x = instructorService.deleteInstructorById(id);
+            if (x == null) {
+                ApiResponse<?> response =new ApiResponse<>(false,"Instructor không tìm thấy!",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<?> response =new ApiResponse<>(true,"Xóa giảng viên thành công!",x);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<?> response =new ApiResponse<>(true,"Xóa giảng viên thành công!",x);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

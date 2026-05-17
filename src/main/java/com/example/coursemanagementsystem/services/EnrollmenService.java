@@ -21,7 +21,7 @@ public class EnrollmenService {
     }
 
     public Enrollment getEnrollmentById(Long id) {
-        return enrollmentRepo.findById(id);
+        return enrollmentRepo.findById(id).orElseThrow(() -> new RuntimeException("Enrollment không tìm thấy"));
     }
 
     public Enrollment createEnrollment(Enrollment enrollment) {

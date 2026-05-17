@@ -40,16 +40,21 @@ public class EnrollmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getEnrollmentById(@PathVariable Long id) {
-        Enrollment x = enrollmentService.getEnrollmentById(id);
+        try {
+            Enrollment x = enrollmentService.getEnrollmentById(id);
 
-        if (x == null) {
-            ApiResponse<?> response = new ApiResponse<>(false,"Enrollment không tìm thấy",null);
+            if (x == null) {
+                ApiResponse<?> response = new ApiResponse<>(false,"Enrollment không tìm thấy",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<Enrollment> response = new ApiResponse<>(true,"Lấy nhập học theo Id thành công!",x);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<Enrollment> response = new ApiResponse<>(true,"Lấy nhập học theo Id thành công!",x);
-
-        return ResponseEntity.ok(response);
     }
 
 
@@ -92,15 +97,20 @@ public class EnrollmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> updateEnrollment(@PathVariable Long id, @RequestBody Enrollment enrollment) {
-        Enrollment x = enrollmentService.updateEnrollment(id, enrollment);
+        try {
+            Enrollment x = enrollmentService.updateEnrollment(id, enrollment);
 
-        if (x == null) {
-            ApiResponse<?> response =new ApiResponse<>(false,"Enrollment không tìm thấy!",null);
+            if (x == null) {
+                ApiResponse<?> response =new ApiResponse<>(false,"Enrollment không tìm thấy!",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<?> response =new ApiResponse<>(true,"Cập nhật nhập học thành công!",x);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<?> response =new ApiResponse<>(true,"Cập nhật nhập học thành công!",x);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 //    @DeleteMapping("/{id}")
@@ -115,14 +125,19 @@ public class EnrollmentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEnrollmentById(@PathVariable Long id) {
-        Enrollment x = enrollmentService.deleteEnrollmentById(id);
-        if (x == null) {
-            ApiResponse<?> response =new ApiResponse<>(false,"Enrollment không tìm thấy!",null);
+        try {
+            Enrollment x = enrollmentService.deleteEnrollmentById(id);
+            if (x == null) {
+                ApiResponse<?> response =new ApiResponse<>(false,"Enrollment không tìm thấy!",null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ApiResponse<?> response =new ApiResponse<>(true,"Xóa nhập học thành công!",x);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (Exception e) {
+            ApiResponse<?> response = new ApiResponse<>(false,e.getMessage(),null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        ApiResponse<?> response =new ApiResponse<>(true,"Xóa nhập học thành công!",x);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

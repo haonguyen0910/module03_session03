@@ -1,11 +1,11 @@
 package com.example.coursemanagementsystem.repositories;
 
-import com.example.coursemanagementsystem.models.Course;
 import com.example.coursemanagementsystem.models.Instructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class InstructorRepo {
@@ -19,13 +19,17 @@ public class InstructorRepo {
         return instructorList;
     }
 
-    public Instructor findById(Long id) {
-        for (Instructor x : instructorList) {
-            if(x.getId() == id) {
-                return x;
-            }
-        }
-        return null;
+//    public Instructor findById(Long id) {
+//        for (Instructor x : instructorList) {
+//            if(x.getId() == id) {
+//                return x;
+//            }
+//        }
+//        return null;
+//    }
+
+    public Optional<Instructor> findById(Long id) {
+        return instructorList.stream().filter(x -> x.getId().equals(id)).findFirst();
     }
 
     public Instructor create(Instructor instructor) {
@@ -33,22 +37,38 @@ public class InstructorRepo {
         return instructor;
     }
 
+//    public Instructor update(Long id, Instructor instructor) {
+//        for (Instructor x : instructorList) {
+//            if(x.getId() == id) {
+//                x.setName(instructor.getName());
+//                x.setEmail(instructor.getEmail());
+//                return x;
+//            }
+//        }
+//        return null;
+//    }
+
     public Instructor update(Long id, Instructor instructor) {
-        for (Instructor x : instructorList) {
-            if(x.getId() == id) {
-                x.setName(instructor.getName());
-                x.setEmail(instructor.getEmail());
-                return x;
-            }
-        }
-        return null;
+
+        Instructor x = findById(id).orElseThrow(() -> new RuntimeException("Instructor không tìm thấy"));
+        x.setName(instructor.getName());
+        x.setEmail(instructor.getEmail());
+
+        return x;
     }
 
+//    public Instructor deleteById(Long id) {
+//        Instructor x = findById(id);
+//        if (x != null) {
+//            instructorList.remove(x);
+//        }
+//        return x;
+//    }
+
     public Instructor deleteById(Long id) {
-        Instructor x = findById(id);
-        if (x != null) {
-            instructorList.remove(x);
-        }
+        Instructor x = findById(id).orElseThrow(() -> new RuntimeException("Instructor không tìm thấy"));
+        instructorList.remove(x);
+
         return x;
     }
 }
